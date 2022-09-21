@@ -13,6 +13,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using HR.LeaveManagement.Application.Infrastructure.Contracts;
+using HR.LeaveManagement.Application.Models;
 
 namespace HR.LeaveManagement.Application.Features.LeaveRequests.Handlers.Commands
 {
@@ -21,15 +23,17 @@ namespace HR.LeaveManagement.Application.Features.LeaveRequests.Handlers.Command
         private readonly ILeaveRequestRepository _leaveRequestRepository;
         private readonly ILeaveTypeRepository _leaveTypeRepository;
         private readonly IMapper _mapper;
+        private readonly IEmailSender _emailSender;
 
         public CreateLeaveRequestCommandHandler(
             ILeaveRequestRepository leaveRequestRepository,
             ILeaveTypeRepository leaveTypeRepository,
-            IMapper mapper)
+            IMapper mapper, IEmailSender emailSender)
         {
             _leaveTypeRepository = leaveTypeRepository;
             _leaveRequestRepository = leaveRequestRepository;
             _mapper = mapper;
+            _emailSender = emailSender;
         }
 
         public async Task<BaseCommandResponse> Handle(CreateLeaveRequestCommand request, CancellationToken cancellationToken)
@@ -52,6 +56,23 @@ namespace HR.LeaveManagement.Application.Features.LeaveRequests.Handlers.Command
             response.Success = true;
             response.Message = "Creation Successful";
             response.Id = leaveRequest.Id;
+
+            var email = new Email
+            {
+                To = "test@test.com",
+                Body = "test",
+                Subject = "Approved"
+            };
+
+            try
+            {
+                await _emailSender.SendEmail(email);
+            }
+            catch (Exception e)
+            {
+
+            }
+
             return response;
         }
     }
