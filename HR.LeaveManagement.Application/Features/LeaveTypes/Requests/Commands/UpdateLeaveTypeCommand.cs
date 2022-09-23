@@ -10,5 +10,9 @@ namespace HR.LeaveManagement.Application.Features.LeaveTypes.Requests.Commands
     {
         public LeaveTypeDto LeaveTypeDto { get; set; }
 
+        public UpdateLeaveTypeCommand(LeaveTypeDto leaveTypeDto)
+        {
+            LeaveTypeDto = leaveTypeDto;
+        }
     }
 }

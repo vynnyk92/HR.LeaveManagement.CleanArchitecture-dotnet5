@@ -8,7 +8,7 @@ namespace HR.LeaveManagement.Persistence
 {
     public static class PersistenceServicesRegistration
     {
-        public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigurePersistenceServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<LeaveManagementDbContext>(opt=>
                 opt.UseSqlServer(

@@ -1,4 +1,8 @@
-﻿public class Startup
+﻿using HR.LeaveManagement.Application;
+using HR.LeaveManagement.In;
+using HR.LeaveManagement.Persistence;
+
+public class Startup
 {
     public Startup(IConfigurationRoot configuration)
     {
@@ -12,6 +16,9 @@
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        services.ConfigureApplicationServices();
+        services.ConfigureInfrastructureServices(Configuration);
+        services.ConfigurePersistenceServices(Configuration);
     }
 
     public void Configure(IApplicationBuilder app, IHostApplicationLifetime lifetime, IWebHostEnvironment env)
