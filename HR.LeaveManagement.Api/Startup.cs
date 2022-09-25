@@ -1,4 +1,5 @@
-﻿using HR.LeaveManagement.Application;
+﻿using HR.LeaveManagement.Api.Middleware;
+using HR.LeaveManagement.Application;
 using HR.LeaveManagement.In;
 using HR.LeaveManagement.Persistence;
 
@@ -29,6 +30,9 @@ public class Startup
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        app.UseMiddleware<ExceptionMiddleware>();
+
         app.UseRouting();
         app.UseHttpsRedirection();
 

@@ -36,21 +36,18 @@ namespace HR.LeaveManagement.Persistence.Repositories
         public async Task<T> Add(T entity)
         {
             await _leaveManagementDbContext.AddAsync(entity);
-            await _leaveManagementDbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<T> Update(T entity)
         {
             _leaveManagementDbContext.Entry(entity).State = EntityState.Modified;
-            await _leaveManagementDbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<T> Delete(T entity)
         {
             _leaveManagementDbContext.Set<T>().Remove(entity);
-            await _leaveManagementDbContext.SaveChangesAsync();
             return entity;
         }
     }

@@ -20,26 +20,23 @@ namespace HR.LeaveManagement.Application.Features.LeaveRequests.Handlers.Command
 {
     public class CreateLeaveRequestCommandHandler : IRequestHandler<CreateLeaveRequestCommand, BaseCommandResponse>
     {
-        private readonly ILeaveRequestRepository _leaveRequestRepository;
-        private readonly ILeaveTypeRepository _leaveTypeRepository;
         private readonly IMapper _mapper;
         private readonly IEmailSender _emailSender;
+        private readonly IUnitOfWork _ofWork;
 
         public CreateLeaveRequestCommandHandler(
-            ILeaveRequestRepository leaveRequestRepository,
             ILeaveTypeRepository leaveTypeRepository,
-            IMapper mapper, IEmailSender emailSender)
+            IMapper mapper, IEmailSender emailSender, IUnitOfWork ofWork)
         {
-            _leaveTypeRepository = leaveTypeRepository;
-            _leaveRequestRepository = leaveRequestRepository;
             _mapper = mapper;
             _emailSender = emailSender;
+            _ofWork = ofWork;
         }
 
         public async Task<BaseCommandResponse> Handle(CreateLeaveRequestCommand request, CancellationToken cancellationToken)
         {
             var response = new BaseCommandResponse();
-            var validator = new CreateLeaveRequestDtoValidator(_leaveTypeRepository);
+            var validator = new CreateLeaveRequestDtoValidator(_ofWork.LeaveTypeRepository);
             var validationResult = await validator.ValidateAsync(request.LeaveRequestDto);
 
             if (validationResult.IsValid == false)
@@ -51,7 +48,8 @@ namespace HR.LeaveManagement.Application.Features.LeaveRequests.Handlers.Command
 
             var leaveRequest = _mapper.Map<LeaveRequest>(request.LeaveRequestDto);
 
-            leaveRequest = await _leaveRequestRepository.Add(leaveRequest);
+            leaveRequest = await _ofWork.LeaveRequestRepository.Add(leaveRequest);
+            await _ofWork.Save();
 
             response.Success = true;
             response.Message = "Creation Successful";
